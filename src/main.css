@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.user-select {
+  position: absolute;
+  left: 1%;
+  top: 1%;
+  padding: 5 10px;
+  width: 200px;
+  height: 30px;
+}

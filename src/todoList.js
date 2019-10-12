@@ -17,12 +17,19 @@ export default class TodoList extends React.Component {
 
     handleUserSelectFocus() {
         if (this.state.users.length === 1) {
+            this.setState({ users: [...this.state.users, { name: "loading", id: "loading" }] })
             fetch("http://jsonplaceholder.typicode.com/users")
                 .then(res => res.json())
                 .then(result => {
-                    const responsedUsers = result.map(user => ({ name: user.name, id: user.id }))
+                    const responsedUsers = result.map(user => ({ name: user.name, id: user.id }));
 
-                    this.setState({ users: [...this.state.users, ...responsedUsers] })
+                    //I had to fake loading because I was getting response too fast
+                    setTimeout(() => {
+                        this.setState({ users: [this.state.users[0], ...responsedUsers] })
+                    }, 1000);
+
+                    console.log(this.state.users);
+
                 });
         }
 
