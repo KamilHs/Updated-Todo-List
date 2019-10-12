@@ -5,10 +5,19 @@
 }
 
 .user-select {
-  position: absolute;
+  position: fixed;
   left: 1%;
   top: 1%;
   padding: 5 10px;
   width: 200px;
   height: 30px;
+}
+
+.todolist {
+  display: flex;
+  justify-content: center;
+}
+
+.todos-container {
+  margin: 120px 0;
 }

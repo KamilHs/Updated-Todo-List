@@ -1,5 +1,6 @@
 import React from 'react';
 import UserSelect from './userSelect'
+import TodoItem from './TodoItem'
 
 export default class TodoList extends React.Component {
     constructor() {
@@ -13,11 +14,18 @@ export default class TodoList extends React.Component {
                 id: "all"
             }
         ],
+        todos: [
+
+        ],
+        selectedUserId: "all",
+
     }
 
     handleUserSelectFocus() {
         if (this.state.users.length === 1) {
+
             this.setState({ users: [...this.state.users, { name: "loading", id: "loading" }] })
+
             fetch("http://jsonplaceholder.typicode.com/users")
                 .then(res => res.json())
                 .then(result => {
@@ -28,7 +36,6 @@ export default class TodoList extends React.Component {
                         this.setState({ users: [this.state.users[0], ...responsedUsers] })
                     }, 1000);
 
-                    console.log(this.state.users);
 
                 });
         }
@@ -37,14 +44,22 @@ export default class TodoList extends React.Component {
 
 
     componentDidMount() {
-
+        fetch("https://jsonplaceholder.typicode.com/todos")
+            .then(res => res.json())
+            .then(result => {
+                const responsedTodos = result.map(todo => ({ userId: todo.userId, id: todo.id, title: todo.title }))
+                this.setState({ todos: responsedTodos });
+            })
     }
 
     render() {
         return (
-            <div>
+            <div className="todolist">
                 <div>{this.state.text}</div>
                 <UserSelect handleUserSelectFocus={this.handleUserSelectFocus} users={this.state.users} />
+                <div className="todos-container">
+                    {this.state.todos.map(todo => <TodoItem key={todo.id} todo={todo} />)}
+                </div>
             </div >
         )
     }
