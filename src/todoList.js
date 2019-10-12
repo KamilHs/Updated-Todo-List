@@ -3,10 +3,7 @@ import UserSelect from './userSelect'
 import TodoItem from './TodoItem'
 
 export default class TodoList extends React.Component {
-    constructor() {
-        super();
-        this.handleUserSelectFocus = this.handleUserSelectFocus.bind(this);
-    }
+
     state = {
         users: [
             {
@@ -21,7 +18,7 @@ export default class TodoList extends React.Component {
 
     }
 
-    handleUserSelectFocus() {
+    handleUserSelectFocus = () => {
         if (this.state.users.length === 1) {
 
             this.setState({ users: [...this.state.users, { name: "loading", id: "loading" }] })
@@ -39,27 +36,46 @@ export default class TodoList extends React.Component {
 
                 });
         }
-
     }
 
+
+    handleUserSelectItemClick = (userId) => {
+        console.log(userId);
+
+        if (userId === 'all') {
+            this.componentDidMount();
+        }
+        else {
+
+            fetch("https://jsonplaceholder.typicode.com/todos")
+                .then(res => res.json())
+                .then(result => {
+                    const filteredResponseTodos = result.map(todo => ({ userId: todo.userId, id: todo.id, title: todo.title })).filter(todo => todo.userId === +userId);
+                    this.setState({ todos: filteredResponseTodos })
+                    console.log(this.state.todos);
+                });
+        }
+
+    }
 
     componentDidMount() {
         fetch("https://jsonplaceholder.typicode.com/todos")
             .then(res => res.json())
             .then(result => {
-                const responsedTodos = result.map(todo => ({ userId: todo.userId, id: todo.id, title: todo.title }))
-                this.setState({ todos: responsedTodos });
+                const allResponseTodos = result.map(todo => ({ userId: todo.userId, id: todo.id, title: todo.title }))
+                this.setState({ todos: allResponseTodos });
             })
     }
 
     render() {
         return (
-            <div className="todolist">
-                <div>{this.state.text}</div>
-                <UserSelect handleUserSelectFocus={this.handleUserSelectFocus} users={this.state.users} />
+            <div className="todolist" >
+                <UserSelect handleUserSelectFocus={this.handleUserSelectFocus} handleUserSelectItemClick={this.handleUserSelectItemClick} users={this.state.users} />
+
                 <div className="todos-container">
                     {this.state.todos.map(todo => <TodoItem key={todo.id} todo={todo} />)}
                 </div>
+
             </div >
         )
     }
