@@ -9,7 +9,7 @@ export default class userSelect extends React.Component {
     render() {
         return (
             <div className="form" >
-                <select className="user-select" onChange={(e) => this.props.handleUserSelectItemClick(e.target[e.target.selectedIndex].id)} onFocus={this.props.handleUserSelectFocus} name="user-select">
+                <select className="user-select" onChange={(e) => this.props.handleUserSelectItemClick(e.target.value)} onFocus={this.props.handleUserSelectFocus} name="user-select">
                     {this.props.users.map(user =>
                         <UserSelectOption
                             key={user.id}

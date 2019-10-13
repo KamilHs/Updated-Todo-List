@@ -21,3 +21,9 @@
 .todos-container {
   margin: 120px 0;
 }
+
+.todo-loading {
+  position: absolute;
+  left: 1%;
+  top: 10%;
+}

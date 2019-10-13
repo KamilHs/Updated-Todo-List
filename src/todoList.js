@@ -15,32 +15,28 @@ export default class TodoList extends React.Component {
 
         ],
         selectedUserId: "all",
+        loaded: false,
 
     }
 
     handleUserSelectFocus = () => {
         if (this.state.users.length === 1) {
 
-            this.setState({ users: [...this.state.users, { name: "loading", id: "loading" }] })
+            this.setState({ users: [...this.state.users, { name: "Loading...", id: "loading" }] })
 
             fetch("http://jsonplaceholder.typicode.com/users")
                 .then(res => res.json())
                 .then(result => {
                     const responsedUsers = result.map(user => ({ name: user.name, id: user.id }));
 
-                    //I had to fake loading because I was getting response too fast
-                    setTimeout(() => {
-                        this.setState({ users: [this.state.users[0], ...responsedUsers] })
-                    }, 1000);
-
-
+                    this.setState({ users: [this.state.users[0], ...responsedUsers] })
                 });
         }
     }
 
 
     handleUserSelectItemClick = (userId) => {
-        console.log(userId);
+        this.setState({ loaded: false })
 
         if (userId === 'all') {
             this.componentDidMount();
@@ -51,8 +47,7 @@ export default class TodoList extends React.Component {
                 .then(res => res.json())
                 .then(result => {
                     const filteredResponseTodos = result.map(todo => ({ userId: todo.userId, id: todo.id, title: todo.title })).filter(todo => todo.userId === +userId);
-                    this.setState({ todos: filteredResponseTodos })
-                    console.log(this.state.todos);
+                    this.setState({ loaded: true, todos: filteredResponseTodos })
                 });
         }
 
@@ -63,7 +58,7 @@ export default class TodoList extends React.Component {
             .then(res => res.json())
             .then(result => {
                 const allResponseTodos = result.map(todo => ({ userId: todo.userId, id: todo.id, title: todo.title }))
-                this.setState({ todos: allResponseTodos });
+                this.setState({ loaded: true, todos: allResponseTodos });
             })
     }
 
@@ -73,6 +68,7 @@ export default class TodoList extends React.Component {
                 <UserSelect handleUserSelectFocus={this.handleUserSelectFocus} handleUserSelectItemClick={this.handleUserSelectItemClick} users={this.state.users} />
 
                 <div className="todos-container">
+                    {!this.state.loaded && <div className="todo-loading">Loading...</div>}
                     {this.state.todos.map(todo => <TodoItem key={todo.id} todo={todo} />)}
                 </div>
 
